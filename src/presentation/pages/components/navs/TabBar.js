@@ -1,15 +1,12 @@
 import React from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import { Icon } from "../Icon";
 
 export const TabBar = ({ state, descriptors, navigation }) => {
   return (
     <View style={styles.container}>
-      <BlurView
-        intensity={50}
-        tint="light"
+      <View
         style={styles.bottomNavBar}
         className="w-full"
       >
@@ -81,7 +78,7 @@ export const TabBar = ({ state, descriptors, navigation }) => {
             </TouchableOpacity>
           );
         })}
-      </BlurView>
+      </View>
     </View>
   );
 };
