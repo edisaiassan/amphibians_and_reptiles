@@ -8,7 +8,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 export default function _layout() {
   return (
     <SafeAreaProvider>
-      <View className='w-full h-full bg-red-500t'>
+      <View className='w-full h-full'>
         <StatusBar style="auto" />
         <Stack
           screenOptions={{
