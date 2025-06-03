@@ -1,17 +1,17 @@
-import React from "react";
 import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Icon } from "../Icon";
 
-export const TabBar = ({ state, descriptors, navigation }) => {
+export const TabBar = ({ state, descriptors, navigation, isVertical = false }) => {
+
+  const insets = useSafeAreaInsets();
+
   return (
-    <View style={styles.container}>
-      <BlurView
-        intensity={50}
-        tint="light"
-        style={styles.bottomNavBar}
-        className="w-full"
+    <View style={styles.container} className={`absolute px-4 ${isVertical ? 'top-1/2' : 'bottom-0 w-full'}`}>
+      <View
+        style={[styles.bottomNavBar, {left: insets.left, right: insets.right, bottom: 16 + insets.bottom, maxWidth: !isVertical && 384, alignSelf: !isVertical && "center" }]}
+        className={`${isVertical ? 'flex flex-col px-2 py-4' : 'w-full flex flex-row justify-around py-2 px-4'} gap-2`}
       >
         <LinearGradient
           colors={["#C8E8ECA1", "#77969AA1", "#5E7C80A1", "#466367A1"]}
@@ -25,8 +25,8 @@ export const TabBar = ({ state, descriptors, navigation }) => {
             options.tabBarLabel !== undefined
               ? options.tabBarLabel
               : options.title !== undefined
-              ? options.title
-              : route.name;
+                ? options.title
+                : route.name;
 
           const isFocused = state.index === index;
 
@@ -62,54 +62,40 @@ export const TabBar = ({ state, descriptors, navigation }) => {
               testID={options.tabBarButtonTestID}
               onPress={onPress}
               onLongPress={onLongPress}
-              style={styles.tabButton}
-              className="flex flex-col gap-2"
+              //style={styles.tabButton}
+              className="flex flex-col gap-2 items-center"
             >
               <View
-                className={`${
-                  isFocused ? "bg-green-500" : "bg-transparent"
-                } px-5 py-1 rounded-full`}
+                className={`px-4 py-1 ${isFocused && 'bg-green-500 rounded-full'}`}
               >
                 <Icon
                   path={iconPath}
                   iconColor={isFocused ? "white" : "white"}
                 />
               </View>
-              <Text style={{ color: isFocused ? "#ffffff" : "#ff0000" }}>
+              <Text className='text-white'>
                 {label}
               </Text>
             </TouchableOpacity>
           );
         })}
-      </BlurView>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   bottomNavBar: {
-    flexDirection: "row",
     borderRadius: 9999,
     overflow: "hidden",
-    position: "absolute",
-    bottom: 16,
-    alignSelf: "center", // Centra el componente en su contenedor padre
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 12,
     elevation: 6,
-    maxWidth: 384,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
   },
   container: {
-    marginLeft: 16,
-    marginRight: 16,
-  },
-  tabButton: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    /* marginLeft: 16,
+    marginRight: 16, */
   },
 });

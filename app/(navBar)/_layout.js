@@ -1,11 +1,20 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { Tabs } from "expo-router";
-import { TabBar } from "../../src/presentation/pages/components/navs/TabBar";
-import { home, homeFill, loaction, locationFill } from "../../src/presentation/pages/constants/Icons";
+import { useSafeAreaFrame, useSafeAreaInsets } from "react-native-safe-area-context";
+import { breakpoints } from "../../src/global/constants/breakpoints";
+import { TabBar } from "../../src/global/components/navs/TabBar";
+import { home, homeFill, loaction, locationFill } from "../../src/global/constants/icons";
+
 
 export default function NavBar() {
+
+  const { width } = useSafeAreaFrame()
+  const insets = useSafeAreaInsets()
+
+  const { sm } = breakpoints
+
   return (
-    <Tabs tabBar={(props) => <TabBar {...props} />}>
+    <Tabs tabBar={(props) => <TabBar {...props} isVertical={width > sm && true} />}>
       <Tabs.Screen
         name="index"
         options={{
@@ -19,7 +28,7 @@ export default function NavBar() {
         options={{
           title: "Map",
           tabBarIconPath: locationFill,
-          tabBarIconPathInactive: loaction ,
+          tabBarIconPathInactive: loaction,
         }}
       />
     </Tabs>
