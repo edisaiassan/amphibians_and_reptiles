@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "amphibians_and_reptiles",
-    "slug": "amphibians_and_reptiles",
+    "slug": "anfibios-y-reptiles",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -34,9 +34,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "41cc5915-f0d8-4190-963a-446f88b5e912"
+        "projectId": "2d9a882b-5db2-45e6-9cbd-d1b3e728a566"
       }
     },
-    "owner": "edisasan"
+    "owner": "edisa"
   }
 }

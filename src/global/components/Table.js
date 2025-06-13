@@ -17,7 +17,7 @@ export default function Table({
     const isSingleColor = gradientColors.length === 1
 
     return (
-        <View className='border border-primary overflow-hidden rounded-2xl'>
+        <View style={styles.mainBorder} className='border border-primary overflow-hidden'>
             <View className='bg-pink-500 px-4 py-2'>
                 <LinearGradient
                     colors={isSingleColor ? [gradientColors[0], gradientColors[0]] : gradientColors}
@@ -35,8 +35,8 @@ export default function Table({
             <View>
                 {
                     datas.map((data, index) => (
-                        <View key={index} className={`flex flex-row ${index + 1 < datas.length && 'border-b border-primary'}`}>
-                            <View className={`${width >= xs && 'max-w-[160px]'} flex-1 pl-4 py-4 pr-2 border-r border-primary`}>
+                        <View key={index} className={`flex flex-row ${index + 1 < datas.length && 'border-b-2 border-primary'}`}>
+                            <View className={`${width >= xs && 'max-w-[160px]'} flex-1 pl-4 py-4 pr-2 border-r-2 border-primary`}>
                                 <H5 className='text-primary'>{data.title}</H5>
                             </View>
                             <View className='flex-1 pr-4 py-4 pl-2 '>
@@ -48,4 +48,10 @@ export default function Table({
             </View>
         </View>
     )
+}
+
+const styles = {
+    mainBorder: {
+        borderRadius: 16
+    }
 }

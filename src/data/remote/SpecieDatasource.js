@@ -1,12 +1,13 @@
-import axios from 'axios';
+import axios from 'axios'
 
 // El dataSource resuelve la consulta a la API sin token
-export const getSpeciesDatasource = async () => {
+export const getSpeciesDatasource = async ({ query, page = 1, pageSize = 16 }) => {
 
-    const url = 'https://api.vertebrados.iiap.gob.pe/api/v1/individuals/query'
+    const url = `${process.env.MAIN_URL}/query`
     const data = {
-        page: 1,
-        pageSize: 16,
+        page,
+        pageSize,
+        ...(query && { searchTerm: query })
     }
     try {
         const response = await axios.post(url, data, {
@@ -14,14 +15,21 @@ export const getSpeciesDatasource = async () => {
                 'Accept': '*/*',
                 'Content-Type': 'application/json',
             },
-        });
+        })
+
+        if (response.data.data.length < 1) {
+            return {
+                data: [],
+                message: 'No se ha encontrado resultados',
+                success: true,
+            }
+        }
 
         return {
-            data: response.data.data,
+            data: response.data,
             success: true,
         };
     } catch (e) {
-        console.error('Error en la solicitud:', e)
         return {
             success: false,
             message: e.message,
@@ -31,7 +39,7 @@ export const getSpeciesDatasource = async () => {
 
 export const getSpecieDatasource = async (id) => {
     try {
-        const response = await axios.get(`https://api.vertebrados.iiap.gob.pe/api/v1/individuals/${id}`);
+        const response = await axios.get(`${process.env.MAIN_URL}/${id}`);
         return {
             data: response.data,
             success: true,

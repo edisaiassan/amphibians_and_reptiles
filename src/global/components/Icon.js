@@ -9,14 +9,14 @@ const styles = StyleSheet.create({
 
 export const Icon = ({
   path,
-  height: h = 24, // En React Native, los estilos suelen ser numéricos
+  height = 24, // En React Native, los estilos suelen ser numéricos
   width = 24,
   iconColor = "green", // Los nombres de color son directos en React Native
 }) => {
   const paths = path ? path.split("/") : [];
 
   return (
-    <View style={{ width, height: h }}>
+    <View style={{ width, height: height }}>
       <Svg viewBox="0 0 24 24" width="100%" height="100%">
         {paths.map(
           (singlePath, index) =>
@@ -24,5 +24,5 @@ export const Icon = ({
         )}
       </Svg>
     </View>
-  );
-};
+  )
+}

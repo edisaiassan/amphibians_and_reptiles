@@ -1,101 +1,112 @@
-import { Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import { TouchableOpacity, View, StyleSheet, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Icon } from "../Icon";
+import TabButton from "../buttons/TabButton";
+import { menu } from "../../constants/icons";
 
-export const TabBar = ({ state, descriptors, navigation, isVertical = false }) => {
-
+export const TabBar = ({ state, descriptors, navigation, isVertical = false,
+  gradientColors = ['#BCF0B4', '#86B880', '#53824F', '#3B6939'],
+  locations,
+}) => {
   const insets = useSafeAreaInsets();
+  const isSingleColor = gradientColors.length === 1
 
   return (
-    <View style={styles.container} className={`absolute px-4 ${isVertical ? 'top-1/2' : 'bottom-0 w-full'}`}>
+    <View
+      style={{
+        paddingTop: 64 + insets.top,
+        paddingLeft: 16 + insets.left,
+        paddingRight: 16 + insets.right,
+        paddingBottom: 16 + insets.bottom,
+      }}
+      className={`absolute bottom-0 ${isVertical ? 'max-w-[384px] w-full self-center' : 'h-full justify-center'}`}>
       <View
-        style={[styles.bottomNavBar, {left: insets.left, right: insets.right, bottom: 16 + insets.bottom, maxWidth: !isVertical && 384, alignSelf: !isVertical && "center" }]}
-        className={`${isVertical ? 'flex flex-col px-2 py-4' : 'w-full flex flex-row justify-around py-2 px-4'} gap-2`}
-      >
+        style={styles.shadow}
+        className={`rounded-full border border-outline overflow-hidden ${isVertical ? 'w-full' : ' w-[72px]'}`}>
         <LinearGradient
           colors={["#C8E8ECA1", "#77969AA1", "#5E7C80A1", "#466367A1"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 0, y: 1 }}
           style={StyleSheet.absoluteFill}
         />
-        {state.routes.map((route, index) => {
-          const { options } = descriptors[route.key];
-          const label =
-            options.tabBarLabel !== undefined
-              ? options.tabBarLabel
-              : options.title !== undefined
-                ? options.title
-                : route.name;
+        <ScrollView
+          horizontal={isVertical}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            flexDirection: isVertical ? 'row' : 'col',
+            alignItems: 'center',
+            justifyContent: 'space-evenly',   // Centra si hay pocos
+            flexGrow: 1,                 // Hace que se expanda cuando hay poco contenido
+            gap: 8,
+            paddingHorizontal: isVertical ? 16 : 8,
+            paddingVertical: isVertical ? 8 : 16,
+          }}
+        >
+          {state.routes.map((route, index) => {
+            const { options } = descriptors[route.key];
+            const label =
+              options.tabBarLabel !== undefined
+                ? options.tabBarLabel
+                : options.title !== undefined
+                  ? options.title
+                  : route.name;
 
-          const isFocused = state.index === index;
+            const isFocused = state.index === index;
 
-          const onPress = () => {
-            const event = navigation.emit({
-              type: "tabPress",
-              target: route.key,
-              canPreventDefault: true,
-            });
+            const onPress = () => {
+              const event = navigation.emit({
+                type: "tabPress",
+                target: route.key,
+                canPreventDefault: true,
+              });
 
-            if (!isFocused && !event.defaultPrevented) {
-              navigation.navigate(route.name, route.params);
-            }
-          };
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name, route.params);
+              }
+            };
 
-          const onLongPress = () => {
-            navigation.emit({
-              type: "tabLongPress",
-              target: route.key,
-            });
-          };
+            const onLongPress = () => {
+              navigation.emit({
+                type: "tabLongPress",
+                target: route.key,
+              });
+            };
 
-          // ✅ Icono dinámico según estado
-          const iconPath = isFocused
-            ? options.tabBarIconPath
-            : options.tabBarIconPathInactive ?? options.tabBarIconPath;
+            const iconPath = isFocused
+              ? options.tabBarIconPath
+              : options.tabBarIconPathInactive ?? options.tabBarIconPath;
 
-          return (
-            <TouchableOpacity
-              key={route.key}
-              accessibilityState={isFocused ? { selected: true } : {}}
-              accessibilityLabel={options.tabBarAccessibilityLabel}
-              testID={options.tabBarButtonTestID}
-              onPress={onPress}
-              onLongPress={onLongPress}
-              //style={styles.tabButton}
-              className="flex flex-col gap-2 items-center"
-            >
-              <View
-                className={`px-4 py-1 ${isFocused && 'bg-green-500 rounded-full'}`}
-              >
-                <Icon
-                  path={iconPath}
-                  iconColor={isFocused ? "white" : "white"}
-                />
-              </View>
-              <Text className='text-white'>
-                {label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+            return (
+              <TabButton
+                key={route.key}
+                label={label}
+                iconPath={iconPath}
+                isFocused={isFocused}
+                onPress={onPress}
+                onLongPress={onLongPress}
+                tabBarAccessibilityLabel={options.tabBarAccessibilityLabel}
+                tabBarButtonTestID={options.tabBarButtonTestID}
+                gradientColors={gradientColors}
+                locations={locations}
+                isSingleColor={isSingleColor}
+              />
+            );
+          }
+          )
+          }
+          <TabButton
+            label="Más"
+            iconPath={menu}
+          />
+        </ScrollView>
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  bottomNavBar: {
-    borderRadius: 9999,
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 6,
+  shadow: {
+    elevation: 6, // Android
+    shadowColor: '#000', // iOS
   },
-  container: {
-    /* marginLeft: 16,
-    marginRight: 16, */
-  },
-});
+})

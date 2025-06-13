@@ -7,8 +7,8 @@ export default function Extend({
     style,
 }) {
     return (
-        <View className={`mx-auto w-full ${min ? 'max-w-[768px]' : 'max-w-[1280px]'} ${className}`} style={style}>
+        <View className={`mx-auto flex-1 w-full ${min ? 'max-w-[768px]' : 'max-w-[1280px]'} ${className}`} style={style}>
             {children}
         </View>
     )
-}
+}   

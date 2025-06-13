@@ -1,29 +1,85 @@
 import React from 'react'
-import { View, Pressable } from 'react-native'
+import { View, Pressable, StyleSheet } from 'react-native'
 import H5 from '../texts/H5'
+import { LinearGradient } from 'expo-linear-gradient'
 
 export default function MainButton({
     onPress,
     children,
-    background = 'bg-primary',
     leftChild,
     rightChild,
-    showShadow = false
+    showShadow = false,
+    foregroundColor = 'white',
+    gradientColors = ['#BCF0B4', '#86B880', '#53824F', '#3B6939'],
+    locations,
+    className,
+    style
 }) {
     const cloneWithWhiteIconColor = (child) => {
         return React.isValidElement(child)
-            ? React.cloneElement(child, { iconColor: 'white' })
-            : child
-    }
+            ? React.cloneElement(child, { iconColor: foregroundColor })
+            : child;
+    };
+
+    const isSingleColor = gradientColors.length === 1;
 
     return (
         <Pressable
             onPress={onPress}
-            className={`px-4 py-2 ${background} rounded-full flex-row items-center justify-center gap-2 ${showShadow && 'shadow-lg'}`}
+            className={`p-2 flex-row items-center justify-center gap-2 overflow-hidden ${className}`}
+            style={[styles.buttonWrapper, showShadow && styles.shadow, { flexShrink: 1 }, style]}
         >
-            {leftChild && <View>{cloneWithWhiteIconColor(leftChild)}</View>}
-            <H5 className='px-2 text-center text-white'>{children}</H5>
-            {rightChild && <View>{cloneWithWhiteIconColor(rightChild)}</View>}
+            <LinearGradient
+                colors={isSingleColor ? [gradientColors[0], gradientColors[0]] : gradientColors}
+                locations={
+                    isSingleColor
+                        ? [0, 1]
+                        : locations ?? [0, 0.25, 0.5, 1]
+                }
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={styles.gradient}
+            />
+            {leftChild && (
+                <View className="items-center justify-center">
+                    {cloneWithWhiteIconColor(leftChild)}
+                </View>
+            )}
+            <View>
+                <H5
+                    className="text-center px-2"
+                    style={{ color: foregroundColor }}
+                    numberOfLines={0}
+                >
+                    {children}
+                </H5>
+            </View>
+            {rightChild && (
+                <View className="items-center justify-center">
+                    {cloneWithWhiteIconColor(rightChild)}
+                </View>
+            )}
         </Pressable>
-    )
+    );
 }
+
+const styles = StyleSheet.create({
+    buttonWrapper: {
+        borderRadius: 999,
+        overflow: 'visible', // permite que se vea la sombra
+    },
+    gradient: {
+        ...StyleSheet.absoluteFillObject,
+        borderRadius: 999,
+    },
+    shadow: {
+        // Android
+        elevation: 6,
+
+        // iOS
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 16 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+    },
+});

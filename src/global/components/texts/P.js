@@ -1,8 +1,8 @@
-import { Text } from 'react-native';
+import { Text } from 'react-native'
 
-export default function H5({ children, color, className }) {
+export default function P({ children, color, className, style }) {
   return (
-    <Text className={`${color} text-[14px] leading-[20px] font-normal tracking-[0.25] ${className}`}>
+    <Text className={`${color} text-[14px] leading-[20px] font-normal tracking-[0.25] ${className}`} style={style}>
       {children}
     </Text>
   );

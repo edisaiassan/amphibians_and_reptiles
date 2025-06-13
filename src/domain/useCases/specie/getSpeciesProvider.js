@@ -1,18 +1,27 @@
 import { getSpeciesDatasource } from '../../../data/remote/SpecieDatasource'
 import { getImageSize } from '../../../global/utils/getImageSize';
 
-export const getSpeciesProvider = async () => {
-    const speciesDatasourceResult = await getSpeciesDatasource();
+export const getSpeciesProvider = async ({ query, page = 1, pageSize = 16 }) => {
+    const speciesDatasourceResult = await getSpeciesDatasource({ query, page, pageSize });
 
-    if (!speciesDatasourceResult.success) {
+    if (!speciesDatasourceResult.success) { //Cuando falla
         return {
             message: speciesDatasourceResult.message,
             success: false,
         };
     }
 
+    if (speciesDatasourceResult.success && speciesDatasourceResult.data.length === 0) {
+
+        return {
+            species: [],
+            message: speciesDatasourceResult.message,
+            success: true,
+        }
+    }
+
     const speciesWithSizes = await Promise.all(
-        speciesDatasourceResult.data.map(async (item) => {
+        speciesDatasourceResult.data.data.map(async (item) => {
             const imageUrl = item.files?.images?.[0]?.name?.trim() || null;
 
             let aspectRatio = null;
